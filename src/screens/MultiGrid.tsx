@@ -127,7 +127,6 @@ export default function MultiGrid() {
     data: users.data || [],
     enableRowSelection: true,
     enableMultiRowSelection: false,
-    // onRowSelectionChange: setUserRow,
     onRowSelectionChange: (e) => {
       setUserRow(e);
       setEdited(false);
@@ -152,7 +151,6 @@ export default function MultiGrid() {
     columns: permissionColumns,
     data: permissions,
     enableRowSelection: () => !!Object.keys(userRow).length,
-    // onRowSelectionChange: setPermissionRow,
     onRowSelectionChange: (e) => {
       setPermissionRow(e);
       setEdited(true);
