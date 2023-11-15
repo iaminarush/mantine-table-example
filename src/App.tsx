@@ -3,6 +3,7 @@ import { useState } from "react";
 import CellEdit from "./screens/CellEdit";
 import GroupEdit from "./screens/GroupEdit";
 import MultiGrid from "./screens/MultiGrid";
+import Columns from "./screens/Columns";
 
 export type Book = {
   author: string;
@@ -34,7 +35,7 @@ const patchBooks = async (value: Book) => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string | null>("multi");
+  const [activeTab, setActiveTab] = useState<string | null>("columns");
   return (
     <Flex
       sx={{
@@ -50,11 +51,13 @@ export default function App() {
           <Tabs.Tab value="cell">Cell</Tabs.Tab>
           <Tabs.Tab value="group">Group</Tabs.Tab>
           <Tabs.Tab value="multi">Multi</Tabs.Tab>
+          <Tabs.Tab value="columns">Columns</Tabs.Tab>
         </Tabs.List>
       </Tabs>
       {activeTab === "cell" && <CellEdit />}
       {activeTab === "group" && <GroupEdit />}
       {activeTab === "multi" && <MultiGrid />}
+      {activeTab === "columns" && <Columns />}
     </Flex>
   );
 }
