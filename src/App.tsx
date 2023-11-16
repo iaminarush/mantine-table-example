@@ -4,6 +4,7 @@ import CellEdit from "./screens/CellEdit";
 import GroupEdit from "./screens/GroupEdit";
 import MultiGrid from "./screens/MultiGrid";
 import Columns from "./screens/Columns";
+import InfiniteScroll from "./screens/InfiniteScroll";
 
 export type Book = {
   author: string;
@@ -35,7 +36,7 @@ const patchBooks = async (value: Book) => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string | null>("columns");
+  const [activeTab, setActiveTab] = useState<string | null>("infinite");
   return (
     <Flex
       sx={{
@@ -52,12 +53,14 @@ export default function App() {
           <Tabs.Tab value="group">Group</Tabs.Tab>
           <Tabs.Tab value="multi">Multi</Tabs.Tab>
           <Tabs.Tab value="columns">Columns</Tabs.Tab>
+          <Tabs.Tab value="infinite">Infinite Scroll</Tabs.Tab>
         </Tabs.List>
       </Tabs>
       {activeTab === "cell" && <CellEdit />}
       {activeTab === "group" && <GroupEdit />}
       {activeTab === "multi" && <MultiGrid />}
       {activeTab === "columns" && <Columns />}
+      {activeTab === "infinite" && <InfiniteScroll />}
     </Flex>
   );
 }
