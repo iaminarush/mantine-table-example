@@ -1,16 +1,26 @@
 import {
   MRT_ColumnDef,
+  MRT_ColumnOrderState,
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
 import { Book } from "../App";
 import { useQuery } from "@tanstack/react-query";
-import { Stack, Switch, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Flex,
+  Group,
+  Stack,
+  Switch,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import { useMemo, useState } from "react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 
 const getBooks = async () => {
   const response: Promise<{ data: Book[] }> = (
-    await fetch("https://fakerapi.it/api/v1/books?_quantity=100")
+    await fetch("https://fakerapi.it/api/v1/books?_quantity=10")
   ).json();
   return (await response).data;
 };
@@ -34,6 +44,7 @@ export default function Columns() {
 
   const columns = useMemo<MRT_ColumnDef<Book>[]>(() => {
     return [
+      ...(checked ? [{ header: "Optional" }] : []),
       { header: "Title", accessorKey: "title" },
       { header: "Author", accessorKey: "author", enableResizing: false },
       { header: "Genre", accessorKey: "genre", size: 100 },
@@ -50,7 +61,6 @@ export default function Columns() {
   const table = useMantineReactTable({
     columns,
     data: books.data || [],
-    // layoutMode: "semantic",
     mantineTableProps: {
       sx: {
         tableLayout: "fixed",
@@ -75,13 +85,42 @@ export default function Columns() {
     },
     defaultColumn: { minSize: 80 },
     enableColumnResizing: true,
+    // Set column order to empty array to use column's original ordering
+    state: { columnOrder: [] },
+    // enableEditing: () => checked,
+    // editDisplayMode: "row",
+    // enableRowActions: checked,
+    // renderRowActions: ({ row, table }) => {
+    //   if (checked) {
+    //     return (
+    //       <Flex>
+    //         <Tooltip label="Edit">
+    //           <ActionIcon onClick={() => table.setEditingRow(row)}>
+    //             <IconEdit />
+    //           </ActionIcon>
+    //         </Tooltip>
+    //         <Tooltip label="Delete">
+    //           <ActionIcon
+    //             color="red"
+    //             // onClick={() => openDeleteConfirmModal(row)}
+    //           >
+    //             <IconTrash />
+    //           </ActionIcon>
+    //         </Tooltip>
+    //       </Flex>
+    //     );
+    //   } else {
+    //     return undefined;
+    //   }
+    // },
   });
 
   return (
-    <Stack h="100%" sx={{ flexGrow: 1 }}>
+    <Stack h="100%" sx={{ flexGrow: 1 }} py={4}>
       <Switch
         checked={checked}
         onChange={(e) => setChecked(e.currentTarget.checked)}
+        label="Toggle Column"
       />
       <MantineReactTable table={table} />
     </Stack>
