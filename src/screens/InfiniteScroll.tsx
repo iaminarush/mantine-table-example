@@ -1,14 +1,14 @@
-import { Button } from "@mantine/core";
-import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
+import { Text } from "@mantine/core";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
   MRT_ColumnDef,
-  MRT_ColumnFiltersState,
   MRT_SortingState,
   MRT_Virtualizer,
+  MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const fetchSize = 25;
 
@@ -16,6 +16,7 @@ type Product = {
   id: number;
   title: string;
   description: string;
+  category: string;
   price: number;
   rating: number;
 };
@@ -32,6 +33,10 @@ const columns: MRT_ColumnDef<Product>[] = [
     accessorKey: "title",
     header: "Title",
   },
+  {
+    accessorKey: "category",
+    header: "Category",
+  },
 ];
 
 export default function InfiniteScroll() {
@@ -39,10 +44,6 @@ export default function InfiniteScroll() {
   const rowVirtualizerInstanceRef =
     useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null);
 
-  const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(
-    []
-  );
-  const [globalFilter, setGlobalFilter] = useState<string>();
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
   const { data, fetchNextPage, isError, isFetching, isLoading } =
@@ -62,8 +63,13 @@ export default function InfiniteScroll() {
         return response.data;
       },
       initialPageParam: 0,
-      getNextPageParam: (_lastGroup, groups) => groups.length,
-      // getNextPageParam: (_lastGroup, groups) => groups.length,
+      getNextPageParam: (lastPage, page) => {
+        //When current length matches server's total, skip last fetch
+        if (page.length * fetchSize >= lastPage.total) {
+          return undefined;
+        }
+        return page.length;
+      },
     });
 
   const flatData = useMemo(
@@ -71,23 +77,82 @@ export default function InfiniteScroll() {
     [data]
   );
 
-  console.log(data, flatData);
+  const totalDBRows = data?.pages?.[0]?.total || 0;
+  const totalFetched = flatData.length;
 
-  // const table = usemantinereacttable({
-  //   columns,
-  //   data: data
-  // });
+  const fetchMoreOnBottomReached = useCallback(
+    (containerRefElement?: HTMLDivElement | null) => {
+      if (containerRefElement) {
+        const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
 
-  // const example = useInfiniteQuery({
-  //   queryKey: ["users"],
-  //   queryFn: async ({pageParam}) => {},
-  //   initialPageParam: 0,
-  //   getNextPageParam: (lastPage, pages) => lastPage.nextC,
-  // });
-
-  return (
-    <>
-      <Button onClick={() => fetchNextPage()}>Next</Button>
-    </>
+        if (
+          //If user has scrolled within 400px of the bottom of the table
+          scrollHeight - scrollTop - clientHeight < 400 &&
+          //wait for current fetch to finish
+          !isFetching &&
+          totalFetched < totalDBRows
+        ) {
+          fetchNextPage();
+        }
+      }
+    },
+    [fetchNextPage, isFetching, totalFetched, totalDBRows]
   );
+
+  const table = useMantineReactTable({
+    columns,
+    data: flatData,
+    mantinePaperProps: {
+      sx: {
+        height: "100%",
+        minHeight: 350,
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+      },
+    },
+    mantineTableContainerProps: {
+      ref: tableContainerRef,
+      sx: {
+        height: 0,
+        minHeight: 0,
+        overflow: "auto",
+        flex: "1 1 auto",
+      },
+      onScroll: (e) => fetchMoreOnBottomReached(e.target as HTMLDivElement),
+    },
+    mantineToolbarAlertBannerProps: {
+      color: "red",
+      children: "Error",
+    },
+    renderBottomToolbarCustomActions: () => (
+      <Text>
+        Fetched {totalFetched} of {totalDBRows} total rows.
+      </Text>
+    ),
+    enablePagination: false,
+    enableRowNumbers: true,
+    enableRowVirtualization: true, //optional, docs recommends to turn on if rows are going to be > 100
+    rowVirtualizerInstanceRef,
+    rowVirtualizerProps: { overscan: 10 },
+    state: {
+      sorting,
+      isLoading,
+      showProgressBars: isFetching,
+      showAlertBanner: isError,
+    },
+    onSortingChange: setSorting,
+    layoutMode: "semantic",
+  });
+
+  useEffect(() => {
+    try {
+      //scroll to top when column sorting changes
+      rowVirtualizerInstanceRef.current?.scrollToIndex(0);
+    } catch (e) {
+      // console.log(e);
+    }
+  }, [sorting]);
+
+  return <MantineReactTable table={table} />;
 }
