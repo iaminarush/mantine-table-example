@@ -55,7 +55,7 @@ const useMutateBook = () => {
 
 const getBooks = async () => {
   const response: Promise<{ data: Book[] }> = (
-    await fetch("https://fakerapi.it/api/v1/books?_quantity=3")
+    await fetch("https://fakerapi.it/api/v1/books?_quantity=100")
   ).json();
   return (await response).data;
 };
