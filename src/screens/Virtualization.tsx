@@ -12,6 +12,7 @@ type Person = {
   email: string;
   phone: string;
   address: string;
+  age: number;
 };
 
 const makeData = (length: number): Person[] =>
@@ -20,6 +21,7 @@ const makeData = (length: number): Person[] =>
     email: faker.internet.email(),
     phone: faker.phone.number(),
     address: faker.location.streetAddress(),
+    age: faker.number.int({ min: 18, max: 100 }),
   }));
 
 const columns: MRT_ColumnDef<Person>[] = [
