@@ -5,6 +5,7 @@ import GroupEdit from "./screens/GroupEdit";
 import MultiGrid from "./screens/MultiGrid";
 import Columns from "./screens/Columns";
 import InfiniteScroll from "./screens/InfiniteScroll";
+import Virtualization from "./screens/Virtualization";
 
 export type Book = {
   author: string;
@@ -36,7 +37,7 @@ export function sleep(ms: number) {
 // };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string | null>("infinite");
+  const [activeTab, setActiveTab] = useState<string | null>("virtualization");
   return (
     <Flex
       sx={{
@@ -54,6 +55,7 @@ export default function App() {
           <Tabs.Tab value="multi">Multi</Tabs.Tab>
           <Tabs.Tab value="columns">Columns</Tabs.Tab>
           <Tabs.Tab value="infinite">Infinite Scroll</Tabs.Tab>
+          <Tabs.Tab value="virtualization">Virtualization</Tabs.Tab>
         </Tabs.List>
       </Tabs>
       {activeTab === "cell" && <CellEdit />}
@@ -61,6 +63,7 @@ export default function App() {
       {activeTab === "multi" && <MultiGrid />}
       {activeTab === "columns" && <Columns />}
       {activeTab === "infinite" && <InfiniteScroll />}
+      {activeTab === "virtualization" && <Virtualization />}
     </Flex>
   );
 }
