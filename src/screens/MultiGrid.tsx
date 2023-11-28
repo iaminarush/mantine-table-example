@@ -145,6 +145,23 @@ export default function MultiGrid() {
         Save
       </Button>
     ),
+    mantinePaperProps: {
+      sx: {
+        height: "100%",
+        minHeight: 350,
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+      },
+    },
+    mantineTableContainerProps: {
+      sx: {
+        height: 0,
+        minHeight: 0,
+        overflow: "auto",
+        flex: "1 1 auto",
+      },
+    },
   });
 
   const permissionTable = useMantineReactTable({
@@ -161,6 +178,23 @@ export default function MultiGrid() {
     }),
     state: { rowSelection: permissionRow },
     getRowId: (row) => `${row.id}`,
+    mantinePaperProps: {
+      sx: {
+        height: "100%",
+        minHeight: 350,
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+      },
+    },
+    mantineTableContainerProps: {
+      sx: {
+        height: 0,
+        minHeight: 0,
+        overflow: "auto",
+        flex: "1 1 auto",
+      },
+    },
   });
 
   useEffect(() => {
