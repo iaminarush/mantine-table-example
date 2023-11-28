@@ -5,7 +5,7 @@ import {
 } from "mantine-react-table";
 import { faker } from "@faker-js/faker";
 import { useEffect, useState } from "react";
-import { Text } from "@mantine/core";
+import { Image, Text } from "@mantine/core";
 
 type Person = {
   firstName: string;
@@ -13,6 +13,8 @@ type Person = {
   phone: string;
   address: string;
   age: number;
+  base64: string;
+  imageUrl: string;
 };
 
 const makeData = (length: number): Person[] =>
@@ -22,6 +24,8 @@ const makeData = (length: number): Person[] =>
     phone: faker.phone.number(),
     address: faker.location.streetAddress(),
     age: faker.number.int({ min: 18, max: 100 }),
+    base64: faker.image.dataUri({ type: "svg-uri" }),
+    imageUrl: faker.image.url(),
   }));
 
 const columns: MRT_ColumnDef<Person>[] = [
@@ -41,6 +45,22 @@ const columns: MRT_ColumnDef<Person>[] = [
     size: 200,
     Cell: ({ renderedCellValue }) => (
       <Text lineClamp={2}>{renderedCellValue}</Text>
+    ),
+  },
+  {
+    accessorKey: "base64",
+    header: "Base64 Image",
+    size: 200,
+    Cell: ({ renderedCellValue }) => (
+      <Image src={renderedCellValue as string} />
+    ),
+  },
+  {
+    accessorKey: "imageUrl",
+    header: "Image URL",
+    size: 200,
+    Cell: ({ renderedCellValue }) => (
+      <Image src={renderedCellValue as string} />
     ),
   },
 ];
