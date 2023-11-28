@@ -1,22 +1,12 @@
+import { Stack, Switch, Text } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
 import {
   MRT_ColumnDef,
-  MRT_ColumnOrderState,
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { Book } from "../App";
-import { useQuery } from "@tanstack/react-query";
-import {
-  ActionIcon,
-  Flex,
-  Group,
-  Stack,
-  Switch,
-  Text,
-  Tooltip,
-} from "@mantine/core";
 import { useMemo, useState } from "react";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { Book } from "../App";
 
 const getBooks = async () => {
   const response: Promise<{ data: Book[] }> = (
@@ -28,19 +18,6 @@ const getBooks = async () => {
 export default function Columns() {
   const books = useQuery({ queryKey: ["books"], queryFn: getBooks });
   const [checked, setChecked] = useState(false);
-
-  // const columns: MRT_ColumnDef<Book>[] = [
-  //   { header: "Title", accessorKey: "title" },
-  //   { header: "Author", accessorKey: "author", enableResizing: false },
-  //   { header: "Genre", accessorKey: "genre", size: 100 },
-  //   {
-  //     header: "Description",
-  //     accessorFn: (b) => <Text lineClamp={2}>{b.description}</Text>,
-  //     accessorKey: "description",
-  //     minSize: 400,
-  //   },
-  //   { header: "ISBN", accessorKey: "isbn", size: 120 },
-  // ];
 
   const columns = useMemo<MRT_ColumnDef<Book>[]>(() => {
     return [
@@ -87,32 +64,6 @@ export default function Columns() {
     enableColumnResizing: true,
     // Set column order to empty array to use column's original ordering
     state: { columnOrder: [] },
-    // enableEditing: () => checked,
-    // editDisplayMode: "row",
-    // enableRowActions: checked,
-    // renderRowActions: ({ row, table }) => {
-    //   if (checked) {
-    //     return (
-    //       <Flex>
-    //         <Tooltip label="Edit">
-    //           <ActionIcon onClick={() => table.setEditingRow(row)}>
-    //             <IconEdit />
-    //           </ActionIcon>
-    //         </Tooltip>
-    //         <Tooltip label="Delete">
-    //           <ActionIcon
-    //             color="red"
-    //             // onClick={() => openDeleteConfirmModal(row)}
-    //           >
-    //             <IconTrash />
-    //           </ActionIcon>
-    //         </Tooltip>
-    //       </Flex>
-    //     );
-    //   } else {
-    //     return undefined;
-    //   }
-    // },
   });
 
   return (
