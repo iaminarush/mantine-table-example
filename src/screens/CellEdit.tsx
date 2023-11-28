@@ -147,12 +147,25 @@ export default function CellEdit() {
     },
     enableStickyHeader: true,
     enableStickyFooter: true,
-    mantinePaperProps: { sx: { borderWidth: 0 } },
-    mantineTableContainerProps: {
-      sx: { minHeight: 350, height: "78vh" },
-    },
     editDisplayMode: "cell",
     enableEditing: true,
+    mantinePaperProps: {
+      sx: {
+        height: "100%",
+        minHeight: 350,
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+      },
+    },
+    mantineTableContainerProps: {
+      sx: {
+        height: 0,
+        minHeight: 0,
+        overflow: "auto",
+        flex: "1 1 auto",
+      },
+    },
   });
 
   return (
