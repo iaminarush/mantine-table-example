@@ -23,19 +23,6 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// const getBooks = async () => {
-//   const response: Promise<{ data: Book[] }> = (
-//     await fetch("https://fakerapi.it/api/v1/books?_quantity=3")
-//   ).json();
-//   return (await response).data;
-// };
-
-// const patchBooks = async (value: Book) => {
-//   return sleep(1000).then(() => {
-//     return value;
-//   });
-// };
-
 export default function App() {
   const [activeTab, setActiveTab] = useState<string | null>("virtualization");
   return (
