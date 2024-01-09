@@ -1,4 +1,4 @@
-import { Stack, Switch, Text } from "@mantine/core";
+import { Group, Stack, Switch, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import {
   MRT_ColumnDef,
@@ -18,11 +18,16 @@ const getBooks = async () => {
 export default function Columns() {
   const books = useQuery({ queryKey: ["books"], queryFn: getBooks });
   const [checked, setChecked] = useState(false);
+  const [largeTitleColumnSize, setLargeTitleColumnSize] = useState(false);
 
   const columns = useMemo<MRT_ColumnDef<Book>[]>(() => {
     return [
       ...(checked ? [{ header: "Optional" }] : []),
-      { header: "Title", accessorKey: "title" },
+      {
+        header: "Title",
+        accessorKey: "title",
+        size: largeTitleColumnSize ? 400 : 200,
+      },
       { header: "Author", accessorKey: "author", enableResizing: false },
       { header: "Genre", accessorKey: "genre", size: 100 },
       {
@@ -61,18 +66,25 @@ export default function Columns() {
       },
     },
     defaultColumn: { minSize: 80 },
-    enableColumnResizing: true,
+    // enableColumnResizing: true,
     // Set column order to empty array to use column's original ordering
     state: { columnOrder: [] },
   });
 
   return (
     <Stack h="100%" sx={{ flexGrow: 1 }} py={4}>
-      <Switch
-        checked={checked}
-        onChange={(e) => setChecked(e.currentTarget.checked)}
-        label="Toggle Column"
-      />
+      <Group>
+        <Switch
+          checked={checked}
+          onChange={(e) => setChecked(e.currentTarget.checked)}
+          label="Toggle Column"
+        />
+        <Switch
+          checked={largeTitleColumnSize}
+          onChange={(e) => setLargeTitleColumnSize(e.currentTarget.checked)}
+          label="Large Column Size"
+        />
+      </Group>
       <MantineReactTable table={table} />
     </Stack>
   );
